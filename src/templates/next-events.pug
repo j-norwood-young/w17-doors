@@ -1,0 +1,7 @@
+.events
+    each event in events
+        .event
+            h3 #{moment(event.starttime).format("ddd D MMM HH[h]mm")} - #{moment(event.endtime).format("HH[h]mm")} (Starts #{moment(event.endtime).fromNow()})
+            p= event.name
+        hr
+            

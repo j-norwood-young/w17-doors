@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>W17 OpenPage</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="description" content="Workshop17 door displays">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-title" content="W17 OpenPage">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Futura:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+		<style>
+		#view-source {
+			position: fixed;
+			display: block;
+			right: 0;
+			bottom: 0;
+			margin-right: 40px;
+			margin-bottom: 40px;
+			z-index: 900;
+		}
+		p{
+			font-size: 20px;
+		}
+		</style>
+	</head>
+	<body>
+        <div id="blackout" class="hide"></div>
+        <div class="container blue-bg center">
+            <div id="logo"><%= require("./images/workshop17-logo-white.svg") %></div>
+        </div>
+        <div id="location" class="container grey-bg center"></div>
+        <div id="primaryEvent"></div>
+        <div class="container white-bg left">
+            <h2>Next</h2>
+            <div id="nextEvents"></div>
+        </div>
+	</body>
+</html>
