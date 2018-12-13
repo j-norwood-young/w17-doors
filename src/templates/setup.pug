@@ -1,0 +1,9 @@
+.container
+    label Select a room
+    select#Room
+        for location in locations
+            optGroup(label=location.name)
+            for room in rooms
+                if (room.location === location._id)
+                    option(value=room._id)= room.name
+    input#RoomSubmit(type="submit")

@@ -9,18 +9,18 @@ moment.tz.setDefault(config.timezone);
 const next_events_template = require("./templates/next-events.pug");
 const primary_event_template = require("./templates/primary-event.pug");
 const no_event_template = require("./templates/no-event.pug");
+const setup_template = require("./templates/setup.pug");
+const login_template = require("./templates/login.pug");
+const waiting_template = require("./templates/waiting.pug");
+const events_template = require("./templates/events.pug");
 
-const qs = QueryString.parse(location.search);
-var feed_url = config.test_feed;
-
-if (qs.room_id) {
-    feed_url = config.feed_url + qs.room_id;
-}
+const app = document.getElementById("app");
 
 var getFeed = function() {
     axios.get(feed_url)
     .then(result => {
-        // console.log(result);
+        app.innerHTML = events_template();
+
         const calendar = ical.parse(result.data);
         const vcalendar = new ICAL.Component(calendar);
         const location = vcalendar.getFirstPropertyValue('name');
@@ -28,7 +28,6 @@ var getFeed = function() {
         document.getElementById("location").innerHTML = location;
 
         var vevents = vcalendar.getAllSubcomponents("vevent");
-        // console.log(vevents);
         var events = vevents.map(vevent => {
             return {
                 name: vevent.getFirstPropertyValue("summary"),
@@ -47,7 +46,6 @@ var getFeed = function() {
         } else {
             document.getElementById("nextEvents").innerHTML = no_event_template();
         }
-        // console.log({ events });
     })
     .catch(err => {
         console.error(err);
@@ -57,7 +55,6 @@ var getFeed = function() {
 function blackout() {
 	var now = new Date();
 	var h = now.getHours();
-	// console.log(h);
 	if ((h > 20) || (h < 6)) {
 		document.getElementById("blackout").classList.remove("hide");
 	} else {
@@ -65,11 +62,77 @@ function blackout() {
 	}
 }
 
+var setReset = function() {
+    var el = document.getElementById("logo");
+    el.addEventListener("dblclick", function() {
+        setup();
+    });
+}
+
 var init = function() {
     blackout();
     getFeed();
     setInterval(getFeed, config.refresh);
     setInterval(blackout, config.refresh);
+    setReset();
 }
 
-init();
+var setup = function() {
+    app.innerHTML = login_template();
+    document.getElementById("Submit").addEventListener("click", (e) => {
+        e.preventDefault();
+        var username = document.getElementById("Email").value;
+        var password = document.getElementById("Password").value;
+        app.innerHTML = waiting_template();
+        var locations = null;
+        var rooms = null;
+        axios.get(`${ config.api_url }/api/location?sort[name]=1&filter[active]=true`, {
+            auth: {
+                username,
+                password
+            }
+        }).then(result => {
+            locations = result.data.data;
+            return axios.get(`${ config.api_url }/api/room?sort[name]=1`, {
+                auth: {
+                    username,
+                    password
+                }
+            })
+        }).then(result => {
+            rooms = result.data.data;
+            app.innerHTML = setup_template({ locations, rooms });
+            document.getElementById("RoomSubmit").addEventListener("click", function(e) {
+                e.preventDefault();
+                room_id = document.getElementById("Room").value;
+                if (room_id) {
+                    window.localStorage.setItem("room_id", room_id);
+                    feed_url = config.feed_url + room_id;
+                    init();
+                }
+            })
+        })
+        .catch(err => {
+            app.innerHTML = login_template({ msg: "Username or password incorrect"} );
+            console.error(err);
+        })
+    })
+}
+
+var feed_url = null;
+
+const qs = QueryString.parse(location.search);
+
+if (qs.room_id) {
+    window.localStorage.setItem("room_id", qs.room_id);
+}
+
+var room_id = window.localStorage.getItem("room_id");
+if (room_id === "undefined") room_id = null;
+if (room_id) {
+    feed_url = config.feed_url + room_id;
+    app.innerHTML = waiting_template();
+    init();
+} else {
+    setup();
+}
