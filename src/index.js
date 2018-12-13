@@ -3,8 +3,7 @@ const QueryString = require("query-string");
 const config = require("../config/development.json");
 const axios = require("axios");
 const ical = require("ical.js");
-const moment = require("moment-timezone");
-moment.tz.setDefault(config.timezone);
+const moment = require("moment-mini");
 
 const next_events_template = require("./templates/next-events.pug");
 const primary_event_template = require("./templates/primary-event.pug");
