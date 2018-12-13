@@ -16,8 +16,11 @@ const events_template = require("./templates/events.pug");
 
 const app = document.getElementById("app");
 
+var setting_up = false;
+
 var getFeed = function() {
-    axios.get(feed_url)
+    if (setting_up) return true;
+    return axios.get(feed_url)
     .then(result => {
         app.innerHTML = events_template();
 
@@ -78,6 +81,7 @@ var init = function() {
 }
 
 var setup = function() {
+    setting_up = true;
     app.innerHTML = login_template();
     document.getElementById("Submit").addEventListener("click", (e) => {
         e.preventDefault();
@@ -104,6 +108,7 @@ var setup = function() {
             app.innerHTML = setup_template({ locations, rooms });
             document.getElementById("RoomSubmit").addEventListener("click", function(e) {
                 e.preventDefault();
+                setting_up = false;
                 room_id = document.getElementById("Room").value;
                 if (room_id) {
                     window.localStorage.setItem("room_id", room_id);
