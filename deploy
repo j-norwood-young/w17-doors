@@ -1,0 +1,4 @@
+#!/bin/sh
+
+scp dist/main.js jason@appserver.open.co.za:/var/www/my.open.co.za/public/doors/.
+scp dist/index.html jason@appserver.open.co.za:/var/www/my.open.co.za/public/doors/.
