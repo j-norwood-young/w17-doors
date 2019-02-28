@@ -1,4 +1,5 @@
 .primary-event.container.yellow-bg.left
     h2 Now
-    h3 #{moment(event.starttime).format("HH[h]mm")} - #{moment(event.endtime).format("HH[h]mm")} (Ends #{moment(event.endtime).fromNow()})
-    p= event.name
+    h3= event.name
+    h4 #{moment(event.starttime).format("HH[h]mm")} - #{moment(event.endtime).format("HH[h]mm")} (Ends #{moment(event.endtime).fromNow()})
+    
