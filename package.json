@@ -11,7 +11,7 @@
   "author": "Jason Norwood-Young",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "config": "^3.0.0",
     "html-webpack-plugin": "^3.2.0",
     "ical.js": "^1.3.0",
